@@ -15,10 +15,16 @@ const TicTacToe = () => {
     <div className="h-screen w-screen flex items-center justify-center flex-col">
       <h1 className="text-3xl mb-8">Tic Tac Toe</h1>
       <div className="grid gird-cols-3 border">
-        {game.map((row, idx) => (
-          <div className="flex">
-            {row.map((cell, i) => (
-              <Cell val={cell} row={idx} col={i} onClick={onCellClickHandler} />
+        {game.map((row, i) => (
+          <div key={`row-${i}`} className="flex">
+            {row.map((cell, j) => (
+              <Cell
+                key={`cell-${i}-${j}`}
+                val={cell}
+                row={i}
+                col={j}
+                onClick={onCellClickHandler}
+              />
             ))}
           </div>
         ))}
