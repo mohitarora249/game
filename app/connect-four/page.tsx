@@ -52,7 +52,7 @@ const Cell = ({ row, col, data, onMouseOverHandler, onMouseClickHandler }: Props
   }
 
   return (
-    <div onMouseOver={onMouseOver} onClick={onClick} className={cn("h-16 w-16 border border-gray-300 bg-gray-200 flex justify-center items-center")}>
+    <div onMouseOver={onMouseOver} onClick={onClick} className="h-16 w-16 border border-gray-300 bg-gray-200 flex justify-center items-center">
       <div className={cn("rounded-full h-5/6 w-5/6", data === null && "bg-white", data === "X" && "bg-blue-400", data === "O" && "bg-red-400")} />
     </div>
   )
