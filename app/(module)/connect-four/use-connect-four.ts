@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GameType, PlayerType } from "./type";
+import { deepClone2DArray } from "@/app/(utils)";
 
 const useConnectFour = () => {
     const [board, setBoard] = useState<GameType>(Array(6).fill(Array(7).fill(null)));
@@ -85,19 +86,33 @@ const useConnectFour = () => {
         } catch (e) { console.log(e) }
     };
 
-    const updateGame = ({row, column, player}: {row: number, column: number, player: PlayerType}) => {
-        setBoard(prev => {
-            const boardCopy = [...prev];
-            boardCopy[row][column] = player;
-            return boardCopy;
+    const updateGame = ({row, col}: {row: number, col: number}) => {
+        let rowToBeUpdated = board.findIndex((rowArr, index) => {
+            // Find the first row that is occupied or at the bottom of the board
+            if (rowArr[col] !== null || index === board.length - 1) return index;
         });
-        if (checkWinner({row, column, player})) {
-            setGameState("over");
-            setWinner(player);
-            return;
+        // Only go up one row if the slot is NOT at the bottom
+        if (rowToBeUpdated !== (board.length - 1)) rowToBeUpdated -= 1;
+        if (board[rowToBeUpdated][col] !== null) rowToBeUpdated -= 1;
+        if (rowToBeUpdated > -1) {
+            setBoard(prev => {
+                const boardCopy = deepClone2DArray(prev);
+                boardCopy[rowToBeUpdated][col] = currentPlayer;
+                console.table(boardCopy)
+                return boardCopy;
+            });
+            if (checkWinner({row: rowToBeUpdated, column: col, player:currentPlayer})) {
+                setGameState("over");
+                setWinner(currentPlayer);
+                return;
+            }
+            setCurrentPlayer(() => currentPlayer === "X" ? "O" : "X");
         }
-        setCurrentPlayer(() => player === "X" ? "O" : "X");
     };
+
+    const onMouseOverHandler = ({row, col}: {row: number, col: number}) => {
+        // console.log("onMouseOverHandler : ", { row, col });
+      }
 
     return {
         board,
@@ -105,7 +120,8 @@ const useConnectFour = () => {
         gameState,
         winner,
         startGameClickHandler,
-        updateGame
+        updateGame,
+        onMouseOverHandler
     }
 };
 

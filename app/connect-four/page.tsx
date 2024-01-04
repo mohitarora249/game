@@ -1,32 +1,24 @@
 "use client";
 
-import { MouseEvent } from "react";
+import { useId } from "react";
 import { PlayerType } from "../(module)/connect-four/type";
 import useConnectFour from "../(module)/connect-four/use-connect-four";
 import { cn } from "../(utils)";
 
 const ConnectFour = () => {
 
-  const { board, currentPlayer, gameState, startGameClickHandler, updateGame, winner } = useConnectFour();
-
-  const onMouseOverHandler = ({row, col}: {row: number, col: number}) => {
-    console.log("onMouseOverHandler : ", { row, col });
-  }
-
-  const onMouseClickHandler = ({row, col}: {row: number, col: number}) => {
-    console.log("onMouseClickHandler : ", { row, col });
-  }
+  const { board, currentPlayer, gameState, startGameClickHandler, updateGame, winner, onMouseOverHandler } = useConnectFour();
 
   return (
     <div className="h-screen w-screen flex items-center justify-center flex-col">
       <h1 className="text-3xl mb-8">Connect Four</h1>
       <div className="relative">
-        <div className="h-16 w-16 absolute top-[-32px] ml-1">
+        {/* <div className="h-16 w-16 absolute top-[-32px] ml-1">
           <div className={cn("rounded-full h-5/6 w-5/6", currentPlayer === "X" ? "bg-blue-400" : "bg-red-400")} />
-        </div>
+        </div> */}
         {board.map((b, idx) => (
-          <div className="flex">
-            {b.map((r, i) => <Cell row={idx} col={i} onMouseClickHandler={onMouseClickHandler} onMouseOverHandler={onMouseOverHandler} data={r} />)}
+          <div key={useId()} className="flex">
+            {b.map((r, i) => <Cell key={useId()} row={idx} col={i} onMouseClickHandler={updateGame} onMouseOverHandler={onMouseOverHandler} data={r} />)}
           </div>
         ))}
       </div>
@@ -44,12 +36,10 @@ type Props = {
 
 const Cell = ({ row, col, data, onMouseOverHandler, onMouseClickHandler }: Props) => {
 
-  const onMouseOver = (e: MouseEvent<HTMLDivElement>) => {
-    console.log("onMouseOver : ", {row, col})
+  const onMouseOver = () => {
     onMouseOverHandler({col,row});
   }
-  const onClick = (e: MouseEvent<HTMLDivElement>) => {
-    console.log("onMouseClickHandler : ", {row, col})
+  const onClick = () => {
     onMouseClickHandler({col,row});
   }
 
