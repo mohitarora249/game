@@ -6,8 +6,15 @@ import useConnectFour from "../(module)/connect-four/use-connect-four";
 import { cn } from "../(utils)";
 
 const ConnectFour = () => {
-
-  const { board, currentPlayer, gameState, startOver, updateGame, winner, onMouseOverHandler } = useConnectFour();
+  const {
+    board,
+    currentPlayer,
+    gameState,
+    startOver,
+    updateGame,
+    winner,
+    onMouseOverHandler,
+  } = useConnectFour();
 
   return (
     <div className="h-screen w-screen flex items-center justify-center flex-col">
@@ -17,8 +24,17 @@ const ConnectFour = () => {
           <div className={cn("rounded-full h-5/6 w-5/6", currentPlayer === "X" ? "bg-blue-400" : "bg-red-400")} />
         </div> */}
         {board.map((b, idx) => (
-          <div key={useId()} className="flex">
-            {b.map((r, i) => <Cell key={useId()} row={idx} col={i} onMouseClickHandler={updateGame} onMouseOverHandler={onMouseOverHandler} data={r} />)}
+          <div key={`row-${idx}`} className="flex">
+            {b.map((r, i) => (
+              <Cell
+                key={`col-${idx}-${i}`}
+                row={idx}
+                col={i}
+                onMouseClickHandler={updateGame}
+                onMouseOverHandler={onMouseOverHandler}
+                data={r}
+              />
+            ))}
           </div>
         ))}
       </div>
@@ -31,32 +47,47 @@ const ConnectFour = () => {
         {winner && <span>Palyer {winner} wins!</span>}
       </p>
     </div>
-  )
+  );
 };
 
 type Props = {
   data: PlayerType | null;
-  onMouseOverHandler: ({row, col}: {row: number, col: number}) => void;
-  onMouseClickHandler: ({row, col}: {row: number, col: number}) => void;
+  onMouseOverHandler: ({ row, col }: { row: number; col: number }) => void;
+  onMouseClickHandler: ({ row, col }: { row: number; col: number }) => void;
   row: number;
   col: number;
-}
+};
 
-const Cell = ({ row, col, data, onMouseOverHandler, onMouseClickHandler }: Props) => {
-
+const Cell = ({
+  row,
+  col,
+  data,
+  onMouseOverHandler,
+  onMouseClickHandler,
+}: Props) => {
   const onMouseOver = () => {
-    onMouseOverHandler({col,row});
-  }
+    onMouseOverHandler({ col, row });
+  };
   const onClick = () => {
-    onMouseClickHandler({col,row});
-  }
+    onMouseClickHandler({ col, row });
+  };
 
   return (
-    <div onMouseOver={onMouseOver} onClick={onClick} className="h-16 w-16 border border-gray-300 bg-gray-200 flex justify-center items-center">
-      <div className={cn("rounded-full h-5/6 w-5/6", data === null && "bg-white", data === "X" && "bg-blue-400", data === "O" && "bg-red-400")} />
+    <div
+      onMouseOver={onMouseOver}
+      onClick={onClick}
+      className="h-16 w-16 border border-gray-300 bg-gray-200 flex justify-center items-center"
+    >
+      <div
+        className={cn(
+          "rounded-full h-5/6 w-5/6",
+          data === null && "bg-white",
+          data === "X" && "bg-blue-400",
+          data === "O" && "bg-red-400"
+        )}
+      />
     </div>
-  )
-}
-
+  );
+};
 
 export default ConnectFour;
