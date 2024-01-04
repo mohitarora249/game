@@ -1,7 +1,7 @@
 import React from "react";
 
-const page = () => {
-  return <div>page</div>;
+const MemoryGame = () => {
+  return <div>MemoryGame</div>;
 };
 
-export default page;
+export default MemoryGame;
