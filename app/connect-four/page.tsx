@@ -7,7 +7,7 @@ import { cn } from "../(utils)";
 
 const ConnectFour = () => {
 
-  const { board, currentPlayer, gameState, startGameClickHandler, updateGame, winner, onMouseOverHandler } = useConnectFour();
+  const { board, currentPlayer, gameState, startOver, updateGame, winner, onMouseOverHandler } = useConnectFour();
 
   return (
     <div className="h-screen w-screen flex items-center justify-center flex-col">
@@ -22,6 +22,14 @@ const ConnectFour = () => {
           </div>
         ))}
       </div>
+      <p className="text-2xl my-4 flex flex-col space-y-4">
+        {gameState === "inprogress" && (
+          <span>Player {currentPlayer} to play</span>
+        )}
+        <button onClick={startOver}>Restart</button>
+        {gameState === "tied" && <span>Game tied!</span>}
+        {winner && <span>Palyer {winner} wins!</span>}
+      </p>
     </div>
   )
 };

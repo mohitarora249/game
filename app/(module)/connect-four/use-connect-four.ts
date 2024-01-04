@@ -6,19 +6,21 @@ const useConnectFour = () => {
     const [board, setBoard] = useState<GameType>(Array(6).fill(Array(7).fill(null)));
     const [currentPlayer, setCurrentPlayer] = useState<PlayerType>("X");
     const [winner, setWinner] = useState<PlayerType | null>(null);
-    const [gameState, setGameState] = useState<"new" | "inprogress" | "tied" | "over">("new");
+    const [gameState, setGameState] = useState<"new" | "inprogress" | "tied" | "over">("inprogress");
 
-    const startGameClickHandler = () => {
+    const startOver = () => {
         setGameState("inprogress");
         setCurrentPlayer("X");
         setWinner(null);
+        setBoard(() => Array(6).fill(Array(7).fill(null)));
     };
 
-    const checkWinner = ({row, column, player}: {row: number, column: number, player: PlayerType}) => {
+    const checkWinner = ({ row, column, player }: { row: number, column: number, player: PlayerType }) => {
         try {
             if (board[row + 1][column] === player) {
                 if (board[row + 2][column] === player) {
                     if (board[row + 3][column] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -29,6 +31,7 @@ const useConnectFour = () => {
             if (board[row + 1][column + 1] === player) {
                 if (board[row + 2][column + 2] === player) {
                     if (board[row + 3][column + 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -39,6 +42,7 @@ const useConnectFour = () => {
             if (board[row + 1][column - 1] === player) {
                 if (board[row + 2][column - 2] === player) {
                     if (board[row + 3][column - 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -49,6 +53,7 @@ const useConnectFour = () => {
             if (board[row][column + 1] === player) {
                 if (board[row][column + 2] === player) {
                     if (board[row][column + 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -59,6 +64,7 @@ const useConnectFour = () => {
             if (board[row][column - 1] === player) {
                 if (board[row][column - 2] === player) {
                     if (board[row][column - 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -69,6 +75,7 @@ const useConnectFour = () => {
             if (board[row - 1][column - 1] === player) {
                 if (board[row - 2][column - 2] === player) {
                     if (board[row - 3][column - 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -79,6 +86,7 @@ const useConnectFour = () => {
             if (board[row - 1][column + 1] === player) {
                 if (board[row - 2][column + 2] === player) {
                     if (board[row - 3][column + 3] === player) {
+                        setGameState("over");
                         return true;
                     }
                 }
@@ -86,7 +94,8 @@ const useConnectFour = () => {
         } catch (e) { console.log(e) }
     };
 
-    const updateGame = ({row, col}: {row: number, col: number}) => {
+    const updateGame = ({ row, col }: { row: number, col: number }) => {
+        if (gameState === "over") return;
         let rowToBeUpdated = board.findIndex((rowArr, index) => {
             // Find the first row that is occupied or at the bottom of the board
             if (rowArr[col] !== null || index === board.length - 1) return index;
@@ -101,7 +110,7 @@ const useConnectFour = () => {
                 console.table(boardCopy)
                 return boardCopy;
             });
-            if (checkWinner({row: rowToBeUpdated, column: col, player:currentPlayer})) {
+            if (checkWinner({ row: rowToBeUpdated, column: col, player: currentPlayer })) {
                 setGameState("over");
                 setWinner(currentPlayer);
                 return;
@@ -110,16 +119,16 @@ const useConnectFour = () => {
         }
     };
 
-    const onMouseOverHandler = ({row, col}: {row: number, col: number}) => {
+    const onMouseOverHandler = ({ row, col }: { row: number, col: number }) => {
         // console.log("onMouseOverHandler : ", { row, col });
-      }
+    }
 
     return {
         board,
         currentPlayer,
         gameState,
         winner,
-        startGameClickHandler,
+        startOver,
         updateGame,
         onMouseOverHandler
     }
