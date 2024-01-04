@@ -14,6 +14,7 @@ const useTickTacToe = () => {
   >("new");
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
+  
   const startGameClickHandler = () => {
     setGameState("inprogress");
     setGame([
