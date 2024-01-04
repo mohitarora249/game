@@ -20,7 +20,6 @@ const useConnectFour = () => {
             if (board[row + 1][column] === player) {
                 if (board[row + 2][column] === player) {
                     if (board[row + 3][column] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -31,7 +30,6 @@ const useConnectFour = () => {
             if (board[row + 1][column + 1] === player) {
                 if (board[row + 2][column + 2] === player) {
                     if (board[row + 3][column + 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -42,7 +40,6 @@ const useConnectFour = () => {
             if (board[row + 1][column - 1] === player) {
                 if (board[row + 2][column - 2] === player) {
                     if (board[row + 3][column - 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -53,7 +50,6 @@ const useConnectFour = () => {
             if (board[row][column + 1] === player) {
                 if (board[row][column + 2] === player) {
                     if (board[row][column + 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -64,7 +60,6 @@ const useConnectFour = () => {
             if (board[row][column - 1] === player) {
                 if (board[row][column - 2] === player) {
                     if (board[row][column - 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -75,7 +70,6 @@ const useConnectFour = () => {
             if (board[row - 1][column - 1] === player) {
                 if (board[row - 2][column - 2] === player) {
                     if (board[row - 3][column - 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -86,7 +80,6 @@ const useConnectFour = () => {
             if (board[row - 1][column + 1] === player) {
                 if (board[row - 2][column + 2] === player) {
                     if (board[row - 3][column + 3] === player) {
-                        setGameState("over");
                         return true;
                     }
                 }
@@ -94,8 +87,12 @@ const useConnectFour = () => {
         } catch (e) { console.log(e) }
     };
 
+    // const checkGameTied = () => {
+    //     return !board.some(b => b.some(((s) => s === null)))
+    // }
+
     const updateGame = ({ row, col }: { row: number, col: number }) => {
-        if (gameState === "over") return;
+        if (gameState === "over" || gameState === "tied") return;
         let rowToBeUpdated = board.findIndex((rowArr, index) => {
             // Find the first row that is occupied or at the bottom of the board
             if (rowArr[col] !== null || index === board.length - 1) return index;
@@ -115,6 +112,11 @@ const useConnectFour = () => {
                 setWinner(currentPlayer);
                 return;
             }
+            // if (checkGameTied()) {
+            //     console.log("check game tied")
+            //     setGameState("tied");
+            //     return;
+            // }
             setCurrentPlayer(() => currentPlayer === "X" ? "O" : "X");
         }
     };
