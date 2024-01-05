@@ -33,7 +33,7 @@ const Cell = ({ idx, onCardClickHandler, emoji, filppedCardsIdx }: Props) => {
   if(emoji === "") return <div className="h-32 w-32 border border-gray-300 flex justify-center items-center" />
   return (
     <div onClick={onClick} key={emoji} className="h-32 w-32 border border-gray-300 flex justify-center items-center">
-      {filppedCardsIdx.indexOf(idx) > -1 ? <div className="text-[6rem] flex justify-center items-center" dangerouslySetInnerHTML={{ __html: emoji }} /> : <div className="text-[6rem] flex justify-center items-center">Flip</div>}
+      {filppedCardsIdx.indexOf(idx) > -1 ? <div className="text-[6rem] flex justify-center items-center" dangerouslySetInnerHTML={{ __html: emoji }} /> : <div className="text-xl flex justify-center items-center">Flip</div>}
     </div>
   )
 }
