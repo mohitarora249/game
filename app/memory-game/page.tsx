@@ -10,7 +10,6 @@ const MemoryGame = () => {
       <div className="grid grid-cols-4">
         {game.map((g, i) => (
           <Cell
-            key={`cell-${i}`}
             filppedCardsIdx={filppedCardsIdx}
             emoji={g}
             idx={i}
@@ -53,7 +52,7 @@ const Cell = ({ idx, onCardClickHandler, emoji, filppedCardsIdx }: Props) => {
           dangerouslySetInnerHTML={{ __html: emoji }}
         />
       ) : (
-        <div className="text-[6rem] flex justify-center items-center">Flip</div>
+        <div className="text-xl flex justify-center items-center">Flip</div>
       )}
     </div>
   );

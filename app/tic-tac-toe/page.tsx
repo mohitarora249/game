@@ -1,6 +1,7 @@
 "use client";
 import { Check, X } from "lucide-react";
 import useTickTacToe from "../(module)/tic-tac-toe/use-tick-tac-toe";
+import { motion } from "framer-motion"
 
 const TicTacToe = () => {
   const {
@@ -36,10 +37,10 @@ const TicTacToe = () => {
         {(gameState === "over" ||
           gameState === "new" ||
           gameState === "tied") && (
-          <button onClick={startGameClickHandler} className="">
-            Start
-          </button>
-        )}
+            <button onClick={startGameClickHandler} className="">
+              Start
+            </button>
+          )}
         {gameState === "tied" && <span>Game tied!</span>}
         {winner && <span>Palyer {winner} wins!</span>}
       </p>
@@ -58,13 +59,20 @@ type CellProps = {
 
 const Cell = ({ row, col, onClick, val }: CellProps) => {
   const onClickHandler = () => onClick(row, col);
+
   return (
-    <div
+    <motion.div
       onClick={onClickHandler}
       className="w-24 h-24 border text-gray-600 flex justify-center items-center font-semibold text-2xl"
     >
-      {!!val && val === 1 && <Check className="h-12 w-12" />}
-      {!!val && val === 2 && <X className="h-12 w-12" />}
-    </div>
+      {!!val && val === 1 && <motion.div
+        whileHover={{ scale: 1.4 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}><Check className="h-12 w-12" /></motion.div>}
+      {!!val && val === 2 && <motion.div
+        whileHover={{ scale: 1.4 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}><X className="h-12 w-12" /></motion.div>}
+    </motion.div>
   );
 };
