@@ -1,4 +1,5 @@
 "use client";
+import useAudio from "@/app/_hooks/common/use-audio";
 import { deepClone2DArray } from "@/app/_utils/index";
 import { useState } from "react";
 import { GameType } from "./types";
@@ -14,6 +15,7 @@ const useTickTacToe = () => {
   >("new");
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
+  const { play } = useAudio("/jump.mp3");
 
   const startGameClickHandler = () => {
     setGameState("inprogress");
@@ -112,6 +114,7 @@ const useTickTacToe = () => {
     const gameCopy = deepClone2DArray(game);
     gameCopy[row][col] = currentPlayer;
     setGame(gameCopy);
+    play();
 
     // check for gameover
     const state = checkWinner(gameCopy);
