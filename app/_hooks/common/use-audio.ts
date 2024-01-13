@@ -18,18 +18,20 @@ const useAudio = (url: string, options: UseAudioOptions = {}) => {
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { autoPlay = false, loop = false, volume = 1 } = options;
+
+  useEffect(() => {
+    const newAudio = new Audio(url);
+    setAudio(newAudio);
+  }, [url]);
   /**
    * Sets up the audio element and handles auto-playback.
    */
   useEffect(() => {
-    const newAudio = new Audio(url);
-    setAudio(newAudio);
-    newAudio.src = url;
-    newAudio.loop = loop;
-    newAudio.volume = volume;
-
-    if (autoPlay) {
-      play();
+    if (audio) {
+      audio.src = url;
+      audio.loop = loop;
+      audio.volume = volume;
+      if (autoPlay) play();
     }
 
     // Cleanup function
