@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useHotKey from "./common/use-hot-keys";
 
@@ -14,8 +14,10 @@ const GAMES = [
 
 const useGameMenu = () => {
   const [selectedGameIdx, setSelectedGameIdx] = useState(0);
+  const { push } = useRouter();
   const handleEnterKeyPressed = (_: KeyboardEvent) => {
-    redirect(`${GAMES[selectedGameIdx].slug}`);
+    console.log("ENTER : ", GAMES[selectedGameIdx].slug);
+    push(`/${GAMES[selectedGameIdx].slug}`);
   };
 
   const handleArrowKeyPressed = (event: KeyboardEvent) => {
