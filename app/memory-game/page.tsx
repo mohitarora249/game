@@ -10,6 +10,7 @@ const MemoryGame = () => {
       <div className="grid grid-cols-4">
         {game.map((g, i) => (
           <Cell
+            key={i}
             filppedCardsIdx={filppedCardsIdx}
             emoji={g}
             idx={i}

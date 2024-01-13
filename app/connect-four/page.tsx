@@ -3,7 +3,7 @@
 import { useId } from "react";
 import { PlayerType } from "../(module)/connect-four/type";
 import useConnectFour from "../(module)/connect-four/use-connect-four";
-import { cn } from "../(utils)";
+import { cn } from "../_utils";
 
 const ConnectFour = () => {
   const {

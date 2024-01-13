@@ -1,5 +1,5 @@
 "use client";
-import { deepClone2DArray } from "@/app/(utils)/index";
+import { deepClone2DArray } from "@/app/_utils/index";
 import { useState } from "react";
 import { GameType } from "./types";
 
@@ -14,7 +14,7 @@ const useTickTacToe = () => {
   >("new");
   const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
   const [winner, setWinner] = useState<1 | 2 | null>(null);
-  
+
   const startGameClickHandler = () => {
     setGameState("inprogress");
     setGame([
