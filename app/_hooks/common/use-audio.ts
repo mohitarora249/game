@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 
 type UseAudioOptions = {
@@ -14,16 +15,18 @@ type UseAudioOptions = {
  * @returns Object with audio control methods and current playback state.
  */
 const useAudio = (url: string, options: UseAudioOptions = {}) => {
-  const [audio] = useState(new Audio(url));
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const { autoPlay = false, loop = false, volume = 1 } = options;
   /**
    * Sets up the audio element and handles auto-playback.
    */
   useEffect(() => {
-    audio.src = url;
-    audio.loop = loop;
-    audio.volume = volume;
+    const newAudio = new Audio(url);
+    setAudio(newAudio);
+    newAudio.src = url;
+    newAudio.loop = loop;
+    newAudio.volume = volume;
 
     if (autoPlay) {
       play();
@@ -31,8 +34,10 @@ const useAudio = (url: string, options: UseAudioOptions = {}) => {
 
     // Cleanup function
     return () => {
-      audio.pause();
-      audio.currentTime = 0;
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
     };
   }, [url, loop, volume, autoPlay, audio]);
 
@@ -40,16 +45,20 @@ const useAudio = (url: string, options: UseAudioOptions = {}) => {
    * Starts playback of the audio.
    */
   const play = () => {
-    audio.play();
-    setIsPlaying(true);
+    if (audio) {
+      audio.play();
+      setIsPlaying(true);
+    }
   };
 
   /**
    * Pauses the audio playback.
    */
   const pause = () => {
-    audio.pause();
-    setIsPlaying(false);
+    if (audio) {
+      audio.pause();
+      setIsPlaying(false);
+    }
   };
 
   /**
@@ -66,7 +75,9 @@ const useAudio = (url: string, options: UseAudioOptions = {}) => {
    * @param newVolume - The new volume value (between 0 and 1).
    */
   const setVolume = (newVolume: number) => {
-    audio.volume = newVolume;
+    if (audio) {
+      audio.volume = newVolume;
+    }
   };
 
   return {
