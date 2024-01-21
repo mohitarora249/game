@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 
 type XYCoord = {
@@ -15,12 +14,14 @@ type Size = {
 const GRAVITY = 1.5;
 
 class Player {
+    private jumpSound = new Audio("/jump.mp3");
     private position: XYCoord;
     velocity: XYCoord;
     private size: Size;
     // private ctx: CanvasRenderingContext2D;
+    platforms: Platform[];
 
-    constructor() {
+    constructor(platforms: Platform[]) {
         this.position = {
             x: 200,
             y: 200
@@ -33,29 +34,46 @@ class Player {
             x: 0,
             y: 1
         }
+        this.platforms = platforms;
         window.addEventListener("keydown", ({ code }) => {
             console.log("code : ", code);
-            switch(code) {
+            switch (code) {
                 case "ArrowDown": {
+                    // this.jumpSound.play();
                     break;
                 }
                 case "ArrowUp": {
+                    // this.jumpSound.play();
                     this.velocity.y -= 20;
                     break;
                 }
                 case "ArrowLeft": {
-                    this.velocity.x = -5;
+                    if (this.position.x > 100) {
+                        this.velocity.x = -5;
+                    } else {
+                        this.velocity.x = 0;
+                        this.platforms.forEach((p) => {
+                            p.pos.x += 15;
+                        });
+                    }
                     break;
                 }
                 case "ArrowRight": {
-                    this.velocity.x = 5;
+                    if (this.position.x < 400) {
+                        this.velocity.x = 5;
+                    } else {
+                        this.velocity.x = 0;
+                        this.platforms.forEach((p) => {
+                            p.pos.x -= 15;
+                        });
+                    }
                     break;
                 }
             }
         });
         window.addEventListener("keyup", ({ code }) => {
             console.log("code : ", code);
-            switch(code) {
+            switch (code) {
                 case "ArrowDown": {
                     break;
                 }
@@ -75,12 +93,12 @@ class Player {
         });
     }
 
-    draw(ctx: CanvasRenderingContext2D){
+    draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = "red";
         ctx.fillRect(this.position.x, this.position.y, this.size.height, this.size.width);
     }
 
-    update(ctx: CanvasRenderingContext2D, canvasHeight: number){
+    update(ctx: CanvasRenderingContext2D, canvasHeight: number) {
         this.draw(ctx);
         this.position.y += this.velocity.y;
         this.position.x += this.velocity.x;
@@ -97,19 +115,20 @@ class Player {
 class Platform {
     private position: XYCoord;
     private size: Size;
-    constructor() {
+    private img = new Image();
+    constructor(pos: XYCoord) {
+        this.img.src = "/platform.png";
         this.position = {
-            x: 400,
-            y: 700
+            x: pos.x,
+            y: pos.y
         }
         this.size = {
-            height: 20,
-            width: 200,
+            height: this.img.height,
+            width: this.img.width
         }
     }
-    draw(ctx: CanvasRenderingContext2D){
-        ctx.fillStyle = "blue";
-        ctx.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
+    draw(ctx: CanvasRenderingContext2D) {
+        ctx.drawImage(this.img, this.position.x, this.position.y)
     }
     get pos() { return this.position };
     get height() { return this.size.height };
@@ -117,15 +136,28 @@ class Platform {
 }
 
 const MarioLikeGame = () => {
-    
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const player = new Player();
-    const platform = new Platform();
+    const platforms = [
+        new Platform({ x: 0, y: 500 }),
+        new Platform({ x: 80, y: 500 }),
+        new Platform({ x: 160, y: 500 }),
+        new Platform({ x: 240, y: 500 }),
+        new Platform({ x: 320, y: 500 }),
+        new Platform({ x: 400, y: 500 }),
+        new Platform({ x: 480, y: 500 }),
+        new Platform({ x: 560, y: 500 }),
+        new Platform({ x: 640, y: 500 }),
+        new Platform({ x: 720, y: 500 }),
+        new Platform({ x: 800, y: 500 }),
+        new Platform({ x: 880, y: 500 }),
+        new Platform({ x: 960, y: 500 }),
+    ];
+    const player = new Player(platforms);
     useEffect(() => {
         if (canvasRef && canvasRef.current) {
             // set height and width to full screen
-            canvasRef.current.height = window.innerHeight;
-            canvasRef.current.width = window.innerWidth;
+            canvasRef.current.height = 576;
+            canvasRef.current.width = 1024;
             animate();
         }
     }, []);
@@ -134,23 +166,27 @@ const MarioLikeGame = () => {
         if (canvasRef && canvasRef.current) {
             const ctx = canvasRef.current.getContext("2d")!;
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-            requestAnimationFrame(animate);
+            platforms.forEach((p) => {
+                p.draw(ctx)
+            });
             player.update(ctx, canvasRef.current.height);
-            platform.draw(ctx);
-
-
-            if (
-                player.pos.y + player.height <= platform.pos.y && 
-                player.pos.y + player.height + player.velocity.y >= platform.pos.y && 
-                player.pos.x + player.width >= platform.pos.x && 
-                player.pos.x <= platform.pos.x + platform.width) {
-                player.velocity.y = 0;
-            }
+            platforms.forEach((platform) => {
+                if (
+                    player.pos.y + player.height <= platform.pos.y &&
+                    player.pos.y + player.height + player.velocity.y >= platform.pos.y &&
+                    player.pos.x + player.width >= platform.pos.x &&
+                    player.pos.x <= platform.pos.x + platform.width) {
+                    player.velocity.y = 0;
+                }
+            });
+            requestAnimationFrame(animate);
         }
     }
 
     return (
-        <canvas height={0} width={0} ref={canvasRef} />
+        <div className="bg-black h-screen w-screen flex justify-center">
+            <canvas className="bg-white" height={0} width={0} ref={canvasRef} />
+        </div>
     )
 }
 
