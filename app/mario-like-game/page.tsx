@@ -20,8 +20,9 @@ class Player {
     private size: Size;
     // private ctx: CanvasRenderingContext2D;
     platforms: Platform[];
+    backgrounds: Array<BackgroundObject[]>;
 
-    constructor(platforms: Platform[]) {
+    constructor(platforms: Platform[], backgrounds: Array<BackgroundObject[]>) {
         this.position = {
             x: 200,
             y: 200
@@ -35,15 +36,15 @@ class Player {
             y: 1
         }
         this.platforms = platforms;
+        this.backgrounds = backgrounds;
         window.addEventListener("keydown", ({ code }) => {
             console.log("code : ", code);
             switch (code) {
                 case "ArrowDown": {
-                    // this.jumpSound.play();
                     break;
                 }
                 case "ArrowUp": {
-                    // this.jumpSound.play();
+                    this.jumpSound.play();
                     this.velocity.y -= 20;
                     break;
                 }
@@ -55,6 +56,11 @@ class Player {
                         this.platforms.forEach((p) => {
                             p.pos.x += 15;
                         });
+                        this.backgrounds.forEach((b) => {
+                            b.forEach((a) => {
+                                a.pos.x += 10;
+                            }); 
+                        });
                     }
                     break;
                 }
@@ -65,6 +71,11 @@ class Player {
                         this.velocity.x = 0;
                         this.platforms.forEach((p) => {
                             p.pos.x -= 15;
+                        });
+                        this.backgrounds.forEach((b) => {
+                            b.forEach((a) => {
+                                a.pos.x -= 10;
+                            }); 
                         });
                     }
                     break;
@@ -135,24 +146,41 @@ class Platform {
     get width() { return this.size.width };
 }
 
+class BackgroundObject {
+    private position: XYCoord;
+    private size: Size;
+    private img = new Image();
+    constructor(pos: XYCoord) {
+        this.img.src = "/background.png";
+        this.position = {
+            x: pos.x,
+            y: pos.y
+        }
+        this.size = {
+            height: window.innerHeight,
+            width: window.innerWidth
+        }
+    }
+    draw(ctx: CanvasRenderingContext2D) {
+        ctx.drawImage(this.img, this.position.x, this.position.y)
+    }
+    get pos() { return this.position };
+    get height() { return this.size.height };
+    get width() { return this.size.width };
+}
+
+const platofrmSizes = [
+    0, 80, 160, 240, 320, 400, 480, 560, 640, 720, 800, 880, 960
+]
+
+
 const MarioLikeGame = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const platforms = [
-        new Platform({ x: 0, y: 500 }),
-        new Platform({ x: 80, y: 500 }),
-        new Platform({ x: 160, y: 500 }),
-        new Platform({ x: 240, y: 500 }),
-        new Platform({ x: 320, y: 500 }),
-        new Platform({ x: 400, y: 500 }),
-        new Platform({ x: 480, y: 500 }),
-        new Platform({ x: 560, y: 500 }),
-        new Platform({ x: 640, y: 500 }),
-        new Platform({ x: 720, y: 500 }),
-        new Platform({ x: 800, y: 500 }),
-        new Platform({ x: 880, y: 500 }),
-        new Platform({ x: 960, y: 500 }),
-    ];
-    const player = new Player(platforms);
+    const platforms = platofrmSizes.map(x => new Platform({ x, y: 500 }));
+    const backgroundRow = (y: number) => Array(18).fill("_").map((x, i) => new BackgroundObject({ x: i * 62, y }));
+    const backgroundObjects: Array<BackgroundObject[]> = Array(8).fill("_").map((_, y) => backgroundRow(y * 62));
+
+    const player = new Player(platforms, backgroundObjects);
     useEffect(() => {
         if (canvasRef && canvasRef.current) {
             // set height and width to full screen
@@ -166,6 +194,11 @@ const MarioLikeGame = () => {
         if (canvasRef && canvasRef.current) {
             const ctx = canvasRef.current.getContext("2d")!;
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+            backgroundObjects.forEach((b) => {
+                b.forEach((a: BackgroundObject) => {
+                    a.draw(ctx);
+                })
+            });
             platforms.forEach((p) => {
                 p.draw(ctx)
             });
